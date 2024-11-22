@@ -10,11 +10,14 @@ def es_palindromo(s: str) -> bool:
    
 
 class GrafoDirigido:
+    # Inicializo el Grafo vacío
     def __init__(self) -> None:
         self.vertices: list = []
         self.vecinos: dict = {}
       
     def agregar_vertice(self, vertice: str) -> None:
+
+        # Verifica que el largo del string a ingresar y agrego el vértice
 
         if len(self.vertices) == 0:
             self.vertices.append(vertice)
@@ -30,6 +33,8 @@ class GrafoDirigido:
             
     def agregar_arista(self, origen: str, destino: str) -> None:
 
+        # Agrego la arista dirigida entre los vértices definidos
+
         if origen in self.vertices and destino in self.vertices and origen != destino:
             self.vecinos[origen].append(destino)
         
@@ -37,6 +42,8 @@ class GrafoDirigido:
     def __eq__(self, other: "GrafoDirigido") -> bool:
         """ compara dos grafos dirigidos (sin tener en cuenta el orden de los conjuntos de vertices y aristas)"""
 
+        # Tomo las listas de vecinos ordenadas y las comparo.
+        # Luego ordeno los diccionarios transformados en listas y comparo.
         return (sorted(self.vertices) == sorted(other.vertices) and sorted(self.vecinos.items()) == sorted(other.vecinos.items()))
 
 def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
@@ -59,15 +66,27 @@ def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
         GrafoDirigido | None: El grafo de reemplazos generado. Retorna `None` si
                               `n` es 0 o si el alfabeto está vacío, ya que no
                               pueden generarse cadenas en estos casos.
+
     """
+
+    # Inicializo un grafo vacío
     grafo_dirigido = GrafoDirigido()
+
+    # Con Product creo todas las combinaciones posibles de vertices. 
+    # Con join los transformo en str.
+    # Recorro esa lista para agregarlos al grafo.
 
     for v in ["".join(combination) for combination in list(product(alfabeto, repeat = n))]:
         grafo_dirigido.agregar_vertice(v)
 
+
+    # Con Permutations hago una lista de tuplas que contengan las posibles combinaciones de los reemplazos.
+    # Recorro esa lista y hago las aristas correspondientes en el caso de que se puedan reemplazar. 
     for vertice in grafo_dirigido.vertices:
         for replace in list(permutations(alfabeto, r = n)):
             grafo_dirigido.agregar_arista(vertice, vertice.replace(replace[0], replace[1]))
+
+
 
     return grafo_dirigido
    
@@ -84,6 +103,6 @@ def distancia_a_palindromo(grafo: GrafoDirigido, start: str) -> int:
 
 
 # Ejemplo Básico:
-grafo = generar_G_r(2, ["a", "b"])
-# print(grafo.vecinos)
+grafo = generar_G_r(4, ["o", "n", "c", "e"])
+print(grafo.vecinos)
 # print(distancia_a_palindromo(grafo, "once")) # Deberia devolver 2.
