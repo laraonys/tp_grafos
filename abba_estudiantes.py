@@ -30,15 +30,15 @@ class GrafoDirigido:
             
     def agregar_arista(self, origen: str, destino: str) -> None:
 
-        if origen in self.vertices and destino in self.vertices:
+        if origen in self.vertices and destino in self.vertices and origen != destino:
             self.vecinos[origen].append(destino)
         
 
     def __eq__(self, other: "GrafoDirigido") -> bool:
         """ compara dos grafos dirigidos (sin tener en cuenta el orden de los conjuntos de vertices y aristas)"""
-        
+
         return (sorted(self.vertices) == sorted(other.vertices) and sorted(self.vecinos.items()) == sorted(other.vecinos.items()))
-    
+
 def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
     """
     Genera el grafo de reemplazos para todas las cadenas posibles de longitud `n`
@@ -60,8 +60,19 @@ def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
                               `n` es 0 o si el alfabeto está vacío, ya que no
                               pueden generarse cadenas en estos casos.
     """
-    # Completar 
-    ...
+    grafo_dirigido = GrafoDirigido()
+
+    for v in ["".join(combination) for combination in list(product(alfabeto, repeat = n))]:
+        grafo_dirigido.agregar_vertice(v)
+
+    for vertice in grafo_dirigido.vertices:
+        for replace in list(permutations(alfabeto, r = n)):
+            grafo_dirigido.agregar_arista(vertice, vertice.replace(replace[0], replace[1]))
+
+    return grafo_dirigido
+   
+
+
 
 def distancia_a_palindromo(grafo: GrafoDirigido, start: str) -> int:
     """ utiliza un algoritmo BFS para encontrar la minima distancia desde start
@@ -70,7 +81,9 @@ def distancia_a_palindromo(grafo: GrafoDirigido, start: str) -> int:
     ...
 
 
+
+
 # Ejemplo Básico:
-grafo = generar_G_r(4, ["o", "n", "c", "e"])
-print(grafo.vecinos)
-print(distancia_a_palindromo(grafo, "once")) # Deberia devolver 2.
+grafo = generar_G_r(2, ["a", "b"])
+# print(grafo.vecinos)
+# print(distancia_a_palindromo(grafo, "once")) # Deberia devolver 2.
