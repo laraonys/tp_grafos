@@ -44,7 +44,9 @@ class GrafoDirigido:
 
         # Tomo las listas de vecinos ordenadas y las comparo.
         # Luego ordeno los diccionarios transformados en listas y comparo.
-        return (sorted(self.vertices) == sorted(other.vertices) and sorted(self.vecinos.items()) == sorted(other.vecinos.items()))
+        return (sorted(self.vertices) == sorted(other.vertices) and
+                 sorted((llave, sorted(valor)) for llave, valor in self.vecinos.items()) == 
+                 sorted((llave, sorted(valor)) for llave, valor in other.vecinos.items()))
 
 def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
     """
