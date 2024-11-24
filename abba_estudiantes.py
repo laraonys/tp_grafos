@@ -60,12 +60,12 @@ def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
     Args:
         n (int): La longitud de las cadenas que forman los nodos del grafo.
         alfabeto (list[str]): Lista de caracteres usados para generar todas las
-                              combinaciones posibles de longitud `n`.
+                                combinaciones posibles de longitud `n`.
 
     Returns:
         GrafoDirigido | None: El grafo de reemplazos generado. Retorna `None` si
-                              `n` es 0 o si el alfabeto está vacío, ya que no
-                              pueden generarse cadenas en estos casos.
+                                `n` es 0 o si el alfabeto está vacío, ya que no
+                                pueden generarse cadenas en estos casos.
 
     """
 
@@ -83,26 +83,49 @@ def generar_G_r(n: int, alfabeto: list[str]) -> GrafoDirigido | None:
     # Con Permutations hago una lista de tuplas que contengan las posibles combinaciones de los reemplazos.
     # Recorro esa lista y hago las aristas correspondientes en el caso de que se puedan reemplazar. 
     for vertice in grafo_dirigido.vertices:
-        for replace in list(permutations(alfabeto, r = n)):
+        for replace in list(permutations(alfabeto, r = 2)):
             grafo_dirigido.agregar_arista(vertice, vertice.replace(replace[0], replace[1]))
 
 
 
     return grafo_dirigido
-   
 
 
 
 def distancia_a_palindromo(grafo: GrafoDirigido, start: str) -> int:
     """ utiliza un algoritmo BFS para encontrar la minima distancia desde start
     a un palindromo en el grafo de reemplazos"""
-    # Completar 
-    ...
+    
+    if start in grafo.vertices:
+        
+        if es_palindromo(start):
+            return 0 
 
+        visitado = set()
+        queue = deque([(start, 0)])  # Cola almacena (nodo, nivel/profundidad)
+
+        while queue:
+
+            vertex, depth = queue.popleft()
+
+            if es_palindromo(vertex):
+                return vertex, depth
+
+            if vertex not in visitado:
+                visitado.add(vertex)
+                for neighbor in grafo.vecinos[vertex]:  # Método vecinos del grafo
+                    if neighbor not in visitado:
+                        queue.append((neighbor, depth + 1))
+
+        # Si no se encuentra un palíndromo
+        return None, -1
+    
+    else:
+        return "El nodo no está en el Grafo"
 
 
 
 # Ejemplo Básico:
 grafo = generar_G_r(4, ["o", "n", "c", "e"])
-print(grafo.vecinos)
-# print(distancia_a_palindromo(grafo, "once")) # Deberia devolver 2.
+# print(grafo.vecinos)
+print(distancia_a_palindromo(grafo, "once")) # Deberia devolver 2.
