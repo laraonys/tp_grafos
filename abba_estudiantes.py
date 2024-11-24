@@ -1,3 +1,13 @@
+"""
+Integrantes del grupo:
+
+Juan Manuel Calle C-7504/3
+Sebatian Muñoz M-7452/7
+Lara Onyskiw O-1861/9
+
+"""
+
+
 from itertools import permutations, product
 from collections import deque
 
